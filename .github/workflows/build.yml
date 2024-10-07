@@ -1,0 +1,84 @@
+name: SonarCloud
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  build:
+    name: Build, Test, and Analyze
+    runs-on: windows-latest
+
+    steps:
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: 17
+          distribution: "zulu"
+
+      - name: Check out the repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Cache SonarCloud packages
+        uses: actions/cache@v4
+        with:
+          path: ~\sonar\cache
+          key: ${{ runner.os }}-sonar
+          restore-keys: ${{ runner.os }}-sonar
+
+      - name: Cache SonarCloud scanner
+        id: cache-sonar-scanner
+        uses: actions/cache@v4
+        with:
+          path: .\.sonar\scanner
+          key: ${{ runner.os }}-sonar-scanner
+          restore-keys: ${{ runner.os }}-sonar-scanner
+
+      - name: Install SonarCloud scanner
+        if: steps.cache-sonar-scanner.outputs.cache-hit != 'true'
+        shell: powershell
+        run: |
+          New-Item -Path .\.sonar\scanner -ItemType Directory
+          dotnet tool update dotnet-sonarscanner --tool-path .\.sonar\scanner
+
+      - name: Install Coverlet Console
+        shell: pwsh
+        run: |
+          dotnet tool install --global coverlet.console
+
+      - name: Install dependencies for Coverlet in the test project
+        shell: pwsh
+        run: |
+          dotnet add src/StitchTrackAPI.Tests/StitchTrackAPI.Tests.csproj package coverlet.collector
+
+      - name: Build and analyze
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        shell: powershell
+        run: |
+          $env:PATH += ";$env:USERPROFILE\.dotnet\tools" # Add .NET tools to PATH
+
+          # Run the SonarCloud begin step with updated exclusions
+          .\.sonar\scanner\dotnet-sonarscanner begin /k:"jsusana27_StitchTrack" /o:"jsusana27" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" `
+            /d:sonar.exclusions="sql-code/InitialInsertStatements.sql" `
+            /d:sonar.coverage.exclusions="**/FrontEnd/**, **/*.html, **/*.js, **/*.ts, **/*.css, **/node_modules/**" `
+            /d:sonar.cs.opencover.reportsPaths="coverage.opencover.xml"
+
+          # Build the solution
+          dotnet build
+
+          # Run tests with Coverlet for code coverage
+          coverlet ".\src\StitchTrackAPI.Tests\bin\Debug\net8.0\StitchTrackAPI.Tests.dll" --target "dotnet" --targetargs "test --no-build" --format "opencover" --output "coverage.opencover.xml"
+
+          # Output the generated coverage file for debugging
+          Write-Host "Validated OpenCover coverage report contents:"
+          Get-Content "coverage.opencover.xml"
+
+          # Run SonarCloud analysis
+          .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"

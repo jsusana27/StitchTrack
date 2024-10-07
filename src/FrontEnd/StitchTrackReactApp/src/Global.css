@@ -1,0 +1,175 @@
+/* Global Styles */
+/* Base styles applied to the entire body of the app */
+body {
+  margin: 0;
+  font-family: "Arial", sans-serif;
+  background-color: #ffbed9;
+}
+
+/* Shared Container Styles */
+/* Flexbox container to center content vertically and horizontally */
+.container {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Header and Title Styles */
+/* Shared styles for headers and titles across the app */
+.header {
+  margin-bottom: 20px;
+}
+
+.title {
+  font-size: 2.5em;
+  color: #333;
+  text-align: center;
+}
+
+.title-separator {
+  border: none;
+  height: 5px;
+  background-color: #aa0356;
+  width: 80%;
+  margin: 0 auto;
+}
+
+/* Button Styles */
+/* Consistent button design across all pages */
+.button-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+}
+
+.button {
+  background-color: #aa0356;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  font-size: 1.2em;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.button:hover {
+  background-color: #005f8b;
+}
+
+/* Form Styling */
+/* Consistent spacing and layout for form fields */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px; /* Even spacing between form elements */
+  width: 100%;
+  max-width: 400px; /* Limits form width to a reasonable size */
+  margin-bottom: 10px;
+}
+
+.form-group label {
+  font-size: 16px;
+  margin-bottom: 5px;
+  text-align: left;
+}
+
+.form-group input {
+  padding: 8px;
+  font-size: 16px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  width: 100%;
+}
+
+/* Error Message Styling */
+.error-message {
+  color: red;
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+/* List Styles */
+/* Used for displaying brands, colors, etc. */
+.list {
+  list-style-type: none;
+  padding: 0;
+}
+
+.item {
+  font-size: 1.5em;
+  margin-bottom: 10px;
+}
+
+/* Table Styling */
+/* Shared table styles for consistent presentation across the app */
+.table {
+  width: 80%; /* Center the table with 80% width */
+  margin: 20px auto; /* Auto margin to center the table */
+  border-collapse: collapse; /* Collapse borders for a cleaner look */
+  font-size: 1.2em;
+  background-color: #fff;
+  color: #333;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+}
+
+.table th,
+.table td {
+  padding: 12px 15px;
+  text-align: center;
+  border: 1px solid #ddd;
+}
+
+.table th {
+  background-color: #aa0356;
+  color: white;
+}
+
+.table tbody tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.table tbody tr:hover {
+  background-color: #f0f0f0;
+}
+
+.table th:first-child,
+.table td:first-child {
+  border-left: none; /* Remove left border for first column */
+}
+
+.table th:last-child,
+.table td:last-child {
+  border-right: none; /* Remove right border for last column */
+}
+
+/* Responsive Design for Tables */
+/* Adjustments for smaller screen sizes (e.g., mobile and tablets) */
+@media screen and (max-width: 768px) {
+  .table {
+    font-size: 1em;
+    width: 100%; /* Full width for smaller screens */
+  }
+
+  .table th,
+  .table td {
+    padding: 10px; /* Reduced padding for smaller screens */
+  }
+}
+
+/* Utility Classes */
+/* Useful classes for common tasks like margin and padding */
+.mt-20 {
+  margin-top: 20px;
+}
+
+.mb-20 {
+  margin-bottom: 20px;
+}
+
+.text-center {
+  text-align: center;
+}
